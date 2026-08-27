@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+*{
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+/* logo */
+.navbar-brand {
+    font-weight: 900;
+    color: #111 !important;
+}
+
+.puntito {
+    color: #c9a227;
+}
+
+/* links */
+.nav-link {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #999 !important;
+}
+
+.nav-link:hover {
+    color: #111 !important;
+}
+
+.nav-link.active {
+    color: #111 !important;
+    border-bottom: 2px solid #c9a227;
+    padding-bottom: 18px;
+    margin-bottom: -10px;
+}
+
+.circulo-usuario {
+    width: 32px;
+    height: 32px;
+    background-color: #111;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+/* sombra navbar */
+.navbar {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* login */
+.login-body{
+    background: #f1f1f3;
+}
+.login-card {
+    width: 100%;
+    max-width: 470px;
+    border-radius: 24px;
+    background: #ffffff;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    padding: 60px 60px 50px;
+}
+
+.logo {
+    font-size: 35px;
+    font-weight: 800;
+    letter-spacing: 6px;
+    color: #000;
+    line-height: 1;
+}
+
+.logo span {
+    color: #f5a623;
+}
+
+.subtitle {
+    color: #9ca3af;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-top: 18px;
+}
+
+.form-label {
+    font-size: 12px;
+    font-weight: 800;
+    color: #6b7280;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+.form-control {
+    height: 58px;
+    border-radius: 8px;
+    border: 1px solid #d7dbe2;
+    background: #f8f9fb;
+    padding-left: 50px;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #c4cad4;
+}
+
+.input-icon {
+    position: absolute;
+    top: 50%;
+    left: 18px;
+    transform: translateY(-50%);
+    color: #c1c7d0;
+    font-size: 18px;
+}
+.form-control::placeholder {
+    color: #adb5bd ;
+}
+.btn-login {
+    height: 58px;
+    border-radius: 8px;
+    background: #071126;
+    border: none;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.btn-login:hover {
+    background: #0c1a38;
+}

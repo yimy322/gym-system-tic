@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Membresías</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+
+<body>
+    <div th:replace="fragments/navbar :: navbar"></div>
+
+    <!-- main content -->
+    <div class="container-fluid px-4 py-4" style="background-color: #F5F6F8; min-height: 100vh;">
+
+        <!-- title -->
+        <h5 class="fw-bold text-uppercase mb-4">
+            <i class="fa-solid fa-file-invoice me-2" style="color: #c9a227;"></i>
+            Configuracion de Membresías
+        </h5>
+
+        <!-- center card -->
+        <div class="row justify-content-center">
+            <!-- ESTADÍSTICAS -->
+            <div class="row g-3 mb-4">
+                <!-- Membresías -->
+                <div class="col-md-4">
+                    <div class="bg-white rounded p-3 h-100" style="border-top:3px solid #0d6efd;">
+                        <small class="text-uppercase text-muted fw-semibold" style="font-size:10px;">
+                            Membresías Registradas
+                        </small>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <h4 class="fw-bold mb-0" th:text="${membershipsSize}">0</h4>
+                            <i class="fa-solid fa-clipboard-list fa-xl text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- Plan más vendido -->
+                <div class="col-md-4">
+                    <div class="bg-white rounded p-3 h-100" style="border-top:3px solid #c9a227;">
+                        <small class="text-uppercase text-muted fw-semibold" style="font-size:10px;">
+                            Plan Más Vendido
+
+                        </small>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <h4 class="fw-bold mb-0" th:text="${mostSoldPlan}">Sin datos</h4>
+                            <i class="fa-solid fa-star fa-xl text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- Precio Promedio -->
+                <div class="col-md-4">
+                    <div class="bg-white rounded p-3 h-100" style="border-top:3px solid #28a745;">
+                        <small class="text-uppercase text-muted fw-semibold" style="font-size:10px;">
+                            Precio Promedio
+                        </small>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <h4 class="fw-bold mb-0" th:text="${averagePrice}">0</h4>
+                            <i class="fa-solid fa-money-bill-wave fa-xl text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FORMULARIO -->
+            <form th:action="@{/memberships/register}" th:object="${membership}" method="post">
+                <div class="bg-white rounded p-4 mb-4">
+                    <small class="text-uppercase fw-bold text-muted" style="font-size:10px;">
+                        <i class="fa-solid fa-pen-to-square me-1" style="color:#c9a227;"></i>
+                        Datos de la Membresía
+                    </small>
+                    <hr>
+                    <div class="row g-3">
+                        <input type="hidden" th:field="*{id}">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Nombre</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fa-solid fa-file-signature"></i>
+                                </span>
+                                <input type="text" class="form-control" placeholder="Mensual" th:field="*{name}" th:errorclass="'is-invalid'">
+                            </div>
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">
+                                Duración (Meses)
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fa-solid fa-calendar-days"></i>
+                                </span>
+                                <input type="number" class="form-control" placeholder="1" th:field="*{durationMonths}" th:errorclass="'is-invalid'">
+                            </div>
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors('durationMonths')}" th:errors="*{durationMonths}"></small>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">
+                                Precio
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    S/.
+                                </span>
+                                <input type="number" class="form-control" placeholder="80" th:field="*{price}" th:errorclass="'is-invalid'">
+                            </div>
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></small>
+                        </div>
+                    </div>
+                    <div class="mt-4 d-flex gap-2 flex-wrap">
+                        <button class="btn text-white d-flex aling-items-center gap-2" style="background-color: #111;" type="submit">
+                            <i class="fa-solid fa-plus me-1"></i>
+                            <span th:text="${membership.id == null} ? 'Crear' : 'Actualizar'"></span>
+                        </button>
+                        <a th:href="@{/memberships/settings}"
+                            class="btn btn-outline-secondary">
+                                <i class="fa-solid fa-eraser me-1"></i>
+                                Limpiar
+                        </a>
+                    </div>
+                </div>
+            </form>
+            <!-- TABLA -->
+            <div class="bg-white rounded p-4">
+                <small class="text-uppercase fw-bold text-muted" style="font-size:10px;">
+                    <i class="fa-solid fa-table me-1" style="color:#c9a227;"></i>
+                    Listado de Membresías
+                </small>
+                <hr>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Duración</th>
+                                <th>Precio</th>
+                                <th>Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="mem : ${memberships}">
+                                <td>
+                                    <strong th:text="${mem.name}"></strong>
+                                </td>
+                                <td th:text="${mem.durationMonths}"></td>
+                                <td th:text="${mem.price}"></td>
+                                <td>
+                                <span th:text="${mem.status} ? 'ACTIVO' : 'INACTIVO'"
+                                    th:class="${mem.status} ? 'badge bg-success text-light' : 'badge bg-danger text-light'"></span>
+                            </td>
+                                <td class="text-center">
+                                    <a th:href="@{/memberships/edit/{id}(id=${mem.id})}"
+                                        class="btn btn-sm btn-primary me-1">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+
+</html>

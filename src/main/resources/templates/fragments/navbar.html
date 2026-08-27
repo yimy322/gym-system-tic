@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>navbar</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@600;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg bg-white  px-4" th:fragment="navbar">
+
+        <!--- logo -->
+        <a class="navbar-brand" th:href="@{/dashboard}">
+            STRKE<span class="puntito">.</span>
+        </a>
+        
+        <!--- links de navegación -->
+        
+        <div class="d-flex w-100 align-items-center">
+            <ul class="navbar-nav me-auto gap-1">
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activePage == 'dashboard'} ? 'active' : ''" th:href="@{/dashboard}">Dashboard</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activePage == 'members'} ? 'active' : ''" th:href="@{/members}">Afiliados</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activePage == 'attendance'} ? 'active' : ''" th:href="@{/attendance}">Asistencia</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activePage == 'subscriptions'} ? 'active' : ''" th:href="@{/subscriptions}">Membresías</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activePage == 'settings'} ? 'active' : ''" th:href="@{/memberships/settings}">Config. Membresías</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activePage == 'membersRegistration'} ? 'active' : ''" th:href="@{/members/register}">Registrar Afiliado</a>
+                </li>
+            </ul>
+
+            <div class="d-flex align-items-center gap-2">
+
+                <div class="circulo-usuario">A</div>
+
+                <!--- nombre del usuario -->
+                <span style="font-size:13px; font-weight: 600;">admin</span>
+
+                <!-- boton para salir -->
+                <form th:action="@{/logout}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary rounded-circle p-1" style="width:32px; height:32px;">
+                        <i class="fa-solid fa-arrow-right-from-bracket" style="font-size:12px;"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+</body>
+</html>

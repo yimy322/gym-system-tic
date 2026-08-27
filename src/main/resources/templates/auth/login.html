@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Document</title>
+</head>
+
+<body class="login-body">
+    <div class="container vh-100 d-flex justify-content-center align-items-center">
+        <div class="login-card">
+            <div class="text-center mb-5">
+                <div class="logo">
+                    STRKE<span>.</span>
+                </div>
+                <div class="subtitle">
+                    PANEL ADMINISTRATIVO
+                </div>
+            </div>
+            <form th:action="@{/login}" method="post">
+                <div class="mb-4">
+                    <label class="form-label">USUARIO</label>
+                    <div class="position-relative">
+                        <i class="fa-solid fa-user input-icon"></i>
+                        <input type="text" name="username" class="form-control" />
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <label class="form-label">CONTRASEÑA</label>
+                    <div class="position-relative">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input type="password" name="password" class="form-control" />
+                    </div>
+                </div>
+                <p th:if="${param.error}" class="form-text text-danger">Usuario o contraseña incorrectos</p>
+                <button type="submit" class="btn btn-login text-white w-100">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                    INICIAR SESIÓN
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

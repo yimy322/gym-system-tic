@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Miembros</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+
+<body>
+    <div th:replace="fragments/navbar :: navbar"></div>
+    <!-- main content -->
+    <div class="container-fluid px-4 py-4" style="background-color: #F5F6F8; min-height: 100vh;">
+
+        <!-- title -->
+        <h5 class="fw-bold text-uppercase mb-4">
+            <i class="fa-solid fa-user-plus" style="color: #c9a227;"></i>
+            Registro de afiliados
+        </h5>
+
+        <div class="card p-4">
+
+            <small class="text-uppercase fw-bold text-muted" style="font-size: 10px;">
+                Nuevo afiliado
+            </small>
+            <hr>
+            <form th:action="@{/members/register}" th:object="${member}" method="post">
+                <div class="row">
+                    <input type="hidden" th:field="*{id}">
+                    <div class="col-12 col-md-4">
+                        <label class="form-label">DNI</label>
+                        <input type="text" class="form-control" th:readonly="${member.id != null}"
+                                placeholder="77777777" maxlength="8" th:field="*{dni}" th:errorclass="'is-invalid'"
+                                inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 8);">
+                        <small class="form-text text-danger" th:if="${#fields.hasErrors('dni')}" th:errors="*{dni}"></small>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label class="form-label">NOMBRES</label>
+                        <input type="text" class="form-control" placeholder="Nombres" th:field="*{firstName}" th:errorclass="'is-invalid'">
+                        <small class="form-text text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></small>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label class="form-label">APELLIDOS</label>
+                        <input type="text" class="form-control" placeholder="Apellidos" th:field="*{lastName}" th:errorclass="'is-invalid'">
+                        <small class="form-text text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></small>
+                    </div>
+                </div>
+
+
+                <div class="row mt-3">
+                    <div class="col-12 col-md-4">
+                        <label class="form-label">TELEFONO</label>
+                        <input type="tel" class="form-control" placeholder="999999999" th:field="*{phone}" th:errorclass="'is-invalid'"
+                                inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 8);">
+                        <small class="form-text text-danger" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
+                    </div>
+
+                    <div class="col-12 col-md-8">
+                        <label class="form-label">EMAIL</label>
+                        <input type="email" class="form-control" placeholder="email@ejemplo.com" th:field="*{email}" th:errorclass="'is-invalid'">
+                        <small class="form-text text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="btn text-white d-flex aling-items-center gap-2" style="background-color: #111;">
+                        <i class="fa-solid fa-user-check"></i>
+                        <span th:text="${member.id == null} ? 'Crear afiliado' : 'Actualizar afiliado'"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- tabla afiliados -->
+        <div class="card p-4 mt-4">
+            <small class="text-uppercase fw-bold text-muted" style="font-size:10px;">
+                <i class="fa-solid fa-list" style="color: #c9a227;"></i>
+                Lista de afiliados
+            </small>
+            <hr>
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>DNI</th>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="member : ${members}">
+                        <td th:text="${member.dni}"></td>
+                        <td th:text="${member.firstName}"></td>
+                        <td th:text="${member.lastName}"></td>
+                        <td>
+                            <span th:text="${member.status} ? 'ACTIVO' : 'INACTIVO'"
+                                th:class="${member.status} ? 'badge bg-success text-light' : 'badge bg-danger text-light'"></span>
+                        </td>
+                        <td>
+                            <a th:href="@{/members/edit/{id}(id=${member.id})}"
+                                class="btn btn-sm btn-primary me-1">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+                            <a th:href="@{/members/toggle-status/{id}(id=${member.id})}"
+                                class="btn btn-sm btn-secondary">
+                                <i class="fa-solid fa-user-slash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+                </tbody>
+            </table>
+        </div>
+        <script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+
+</html>

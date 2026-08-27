@@ -1,0 +1,92 @@
+name: CI Pipeline - Gym Management System
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      
+      - name: 1. Descargar Codigo Fuente
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 2. Configurar Entorno Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: 3. Compilacion y Pruebas Unitarias (JaCoCo Coverage)
+        run: mvn clean verify
+
+      - name: 4. Analisis de Calidad de Codigo (SonarCloud)
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn sonar:sonar \
+            -Dsonar.projectKey=yimy322_gym-management-system2 \
+            -Dsonar.organization=yimy322 \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+
+      - name: 5. Analisis de Seguridad de Dependencias (Snyk SAST)
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          npm install -g snyk
+          snyk test || true 
+        #el test escanea el pom
+
+      - name: 6. Empaquetado - Construir Imagen Docker
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/gym-app:latest .
+
+      - name: 7. Escaneo de Vulnerabilidades de Sistema Operativo (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/gym-app:latest'
+          format: 'table'
+          exit-code: '0' #no rompera el ci
+          severity: 'HIGH,CRITICAL'
+        
+      - name: 8. Login a Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: 9. Publicacion - Subir imagen a Docker Hub
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/gym-app:latest 
+
+      - name: 10. Despliegue - Conectar a VM y correr el contenedor
+        if: github.ref == 'refs/heads/main'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          port: ${{ secrets.VM_PORT }}
+          script: |
+            docker network create gym-network || true
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/gym-app:latest
+            docker stop gym-app || true
+            docker rm gym-app || true
+            docker run -d \
+              --name gym-app \
+              --network gym-network \
+              --restart unless-stopped \
+              -p 8080:8080 \
+              -e DB_URL="${{ secrets.DB_URL }}" \
+              -e DB_USERNAME="${{ secrets.DB_USERNAME }}" \
+              -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+              ${{ secrets.DOCKERHUB_USERNAME }}/gym-app:latest

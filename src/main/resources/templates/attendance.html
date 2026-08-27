@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Asistencia</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+    <div th:replace="fragments/navbar :: navbar"></div>
+      <!-- main content -->
+    <div class="container-fluid px-4 py-4" style="background-color: #F5F6F8; min-height: 100vh;">
+        <!-- title -->
+        <h5 class="fw-bold text-uppercase mb-4">
+            <i class="fa-solid fa-calendar-check me-2" style="color: #c9a227;"></i>
+            Control de Asistencia
+        </h5>
+        <!-- center card -->
+        <div class="row justify-content-center">
+            <div class="col-md-7">
+                <div class="bg-white rounded p-4">
+
+                    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+                    <!-- search dni -->
+                    <form th:action="@{/attendance}" method="get">
+                        <small class="text-uppercase fw-semibold text-muted" style="font-size: 10px;">DNI del Afiliado</small>
+                        <div class="input-group mt-2 mb-4">
+                            <span class="input-group-text bg-white">
+                                <i class="fa-solid fa-id-card text-muted"></i>
+                            </span>
+                            <input type="text" name="dni" class="form-control" placeholder="77777777"
+                                   maxlength="8" th:value="${dni}">
+                            <button type="submit" class="btn text-white fw-bold px-4" style="background-color: #111;">
+                                <i class="fa-solid fa-magnifying-glass me-1"></i>
+                                Buscar
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- member info -->
+                    <th:block th:if="${member != null}">
+
+                        <div class="d-flex align-items-center justify-content-between bg-light rounded p-3 mb-4">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="d-flex justify-content-center align-items-center rounded-circle"
+                                     style="width:40px; height:40px; background-color: #e0e0e0;">
+                                    <i class="fa-solid fa-user text-muted"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold" style="font-size: 14px;"
+                                         th:text="${member.firstName + ' ' + member.lastName}"></div>
+                                    <small class="text-muted" th:text="'DNI: ' + ${member.dni}"></small>
+                                </div>
+                            </div>
+                            <span class="badge rounded-pill"
+                                  style="background-color: #d4f5e9; color: #28a745;"
+                                  th:text="${member.status} ? 'ACTIVO' : 'INACTIVO'"></span>
+                        </div>
+
+                        <!-- ultimas asistencias -->
+                        <div class="bg-white rounded border p-3 mb-4">
+                            <small class="text-uppercase fw-bold text-muted" style="font-size: 10px;">
+                                <i class="fa-regular fa-clock me-1" style="color: #c9a227;"></i>
+                                Últimas Asistencias
+                            </small>
+                            <hr class="my-2">
+
+                            <div th:if="${#lists.isEmpty(attendances)}" class="text-muted">
+                                <small>Sin asistencias registradas</small>
+                            </div>
+
+                            <div th:each="a, iter : ${attendances}"
+                                 class="d-flex align-items-center gap-2 py-2"
+                                 th:classappend="${!iter.last} ? 'border-bottom' : ''">
+                                <i class="fa-solid fa-circle" style="color: #28a745; font-size: 8px;"></i>
+                                <small th:text="${#temporals.format(a.checkInTime, 'yyyy-MM-dd - HH:mm:ss')}"></small>
+                            </div>
+                        </div>
+
+                        <!-- marcar asistencia -->
+                        <form th:action="@{/attendance/mark}" method="post">
+                            <input type="hidden" name="dni" th:value="${member.dni}">
+                            <button type="submit" class="btn w-100 text-white fw-bold text-uppercase py-3"
+                                    style="background-color: #111; letter-spacing: 0.05em;">
+                                <i class="fa-solid fa-circle-check me-2"></i>
+                                Marcar Asistencia
+                            </button>
+                        </form>
+
+                    </th:block>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS -->
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>

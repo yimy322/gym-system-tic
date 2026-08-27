@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afiliados</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+
+</head>
+
+<body>
+    <!-- navbar -->
+    <div th:replace="fragments/navbar :: navbar"></div>
+
+    <!-- main content -->
+    <div class="container-fluid px-4 py-4" style="background-color: #F5F6F8; min-height: 100vh;">
+
+        <!-- title -->
+        <h5 class="fw-bold text-uppercase mb-4">
+            <i class="fa-solid fa-users me-2" style="color: #c9a227;"></i>
+            Afiliados
+        </h5>
+
+        <div class="row g-4">
+
+            <!-- members table -->
+            <div class="col-lg-8">
+
+                <!-- search bar -->
+                <div class="bg-white rounded p-3 mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                        </span>
+                        <input id="searchInput" type="text" class="form-control border-start-0"
+                            placeholder="Buscar por DNI, Nombre o Apellido">
+                    </div>
+                </div>
+
+                <!-- table -->
+                <div class="bg-white rounded">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-uppercase text-muted fw-semibold" style="font-size: 11px;">DNI</th>
+                                <th class="text-uppercase text-muted fw-semibold" style="font-size: 11px;">Nombres</th>
+                                <th class="text-uppercase text-muted fw-semibold" style="font-size: 11px;">Apellidos
+                                </th>
+                                <th class="text-uppercase text-muted fw-semibold" style="font-size: 11px;">Estado</th>
+                                <th class="text-center text-uppercase text-muted fw-semibold" style="font-size: 11px;">
+                                    Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="memberTableBody">
+                            <tr th:each="member : ${members}" class="member-row">
+                                <td th:text="${member.dni}" class="dni"></td>
+                                <td th:text="${member.firstName}" class="first-name"></td>
+                                <td th:text="${member.lastName}" class="last-name"></td>
+                                <td>
+                                    <span th:text="${member.status} ? 'ACTIVO' : 'INACTIVO'"
+                                        th:class="${member.status} ? 'badge bg-success text-light' : 'badge bg-danger text-light'"></span>
+                                </td>
+                                <td class="text-center">
+                                    <a th:href="@{/members(memberId=${member.id})}" class="text-decoration-none">
+                                        <i class="fa-regular fa-eye text-muted"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- attendance panel -->
+            <aside class="col-lg-4">
+
+                <div th:if="${selectedMember == null}" class="bg-white rounded p-4 text-center text-muted">
+                    <i class="fa-regular fa-hand-pointer fs-2 mb-2 d-block"></i>
+                    <small>Selecciona un afiliado de la tabla para ver su detalle</small>
+                </div>
+
+                <th:block th:if="${selectedMember != null}">
+
+                    <!-- selected member -->
+                    <div class="bg-white rounded p-3 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="d-flex justify-content-center align-items-center fw-bold rounded-circle text-white"
+                                style="width:50px; height:50px; background-color: #111; font-size:14px;"
+                                th:text="${#strings.substring(selectedMember.firstName,0,1)} + ${#strings.substring(selectedMember.lastName,0,1)}">
+                            </div>
+                            <div class="ms-3">
+                                <h6 class="mb-0 fw-bold"
+                                    th:text="${selectedMember.firstName + ' ' + selectedMember.lastName}"></h6>
+                                <small class="text-muted">Afiliado seleccionado</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- summary cards -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <div class="bg-white rounded p-3 text-center">
+                                <h3 class="fw-bold mb-0" style="color: #28a745;" th:text="${totalAttendances}">0</h3>
+                                <small class="text-muted">Asistencias</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="bg-white rounded p-3 text-center">
+                                <h6 class="fw-bold mb-0" style="color: #0d6efd;"
+                                    th:text="${lastAttendance != null ? #temporals.format(lastAttendance,'dd/MM') : '—'}">
+                                    25/05</h6>
+                                <small class="text-muted">Último ingreso</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- calendar -->
+                    <div class="bg-white rounded p-3">
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <a class="btn btn-outline-secondary btn-sm"
+                                th:href="@{/members(memberId=${selectedMember.id}, year=${yearMonth.minusMonths(1).getYear()}, month=${yearMonth.minusMonths(1).getMonthValue()})}">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </a>
+                            <strong style="font-size: 13px;" th:text="${monthLabel}">Mayo 2026</strong>
+                            <a class="btn btn-outline-secondary btn-sm"
+                                th:href="@{/members(memberId=${selectedMember.id}, year=${yearMonth.plusMonths(1).getYear()}, month=${yearMonth.plusMonths(1).getMonthValue()})}">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </a>
+                        </div>
+
+                        <div class="row row-cols-7 g-1 text-center fw-semibold text-muted mb-2"
+                            style="font-size: 11px;">
+                            <div class="col">DOM</div>
+                            <div class="col">LUN</div>
+                            <div class="col">MAR</div>
+                            <div class="col">MIE</div>
+                            <div class="col">JUE</div>
+                            <div class="col">VIE</div>
+                            <div class="col">SAB</div>
+                        </div>
+
+                        <div th:each="week : ${calendarWeeks}" class="row row-cols-7 g-1 text-center mb-1"
+                            style="font-size: 12px;">
+                            <div class="col" th:each="day : ${week}">
+                                <div th:if="${day == 0}" class="invisible rounded p-1">0</div>
+                                <div th:unless="${day == 0}" th:text="${day}" th:classappend="${day == today.dayOfMonth and yearMonth.year == today.year and yearMonth.monthValue == today.monthValue}
+                                          ? 'fw-bold text-white'
+                                          : (${attendanceDays.contains(day)} ? '' : 'border')"
+                                    th:style="${day == today.dayOfMonth and yearMonth.year == today.year and yearMonth.monthValue == today.monthValue}
+                                    ? 'background-color:#111;'
+                                    : (${attendanceDays.contains(day)} ? 'background-color:#d4f5e9; color:#28a745;' : '')" class="rounded p-1">
+                                    1
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-2">
+                        <div class="d-flex align-items-center">
+                            <span class="rounded me-2"
+                                style="width:14px; height:14px; background-color: #d4f5e9; display:inline-block;"></span>
+                            <small class="text-muted">Día con asistencia registrada</small>
+                        </div>
+                    </div>
+                </th:block>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+
+    <script>
+        const searchInput = document.getElementById("searchInput");
+        const memberRows = document.querySelectorAll(".member-row");
+        searchInput.addEventListener("input", function () {
+            const query = this.value.trim().toLowerCase();
+            memberRows.forEach(row => {
+                const dni = row.querySelector(".dni")
+                    .textContent
+                    .toLowerCase();
+                const firstName = row.querySelector(".first-name")
+                    .textContent
+                    .toLowerCase();
+                const lastName = row.querySelector(".last-name")
+                    .textContent
+                    .toLowerCase();
+                const match =
+                    dni.includes(query) ||
+                    firstName.includes(query) ||
+                    lastName.includes(query);
+                if (match) {
+                    row.style.removeProperty("display");
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
