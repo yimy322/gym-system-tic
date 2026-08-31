@@ -62,6 +62,9 @@ jobs:
       - name: 8. Exportar imagen como archivo
         run: docker save gym-app:latest -o gym-app.tar
 
+      - name: 8.1. Ajustar permisos del archivo
+        run: chmod 644 gym-app.tar
+
       - name: 9. Copiar imagen a la VM
         if: github.ref == 'refs/heads/main'
         uses: appleboy/scp-action@v0.1.7
